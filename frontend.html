@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Side Quest — Summer 2027 Internship HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff0f6;--panel:#fff;--ink:#4a1737;--mut:#8a5a73;--line:#f1bfd4;--gold:#e83f8f;--goldbg:#ffe0ed;--ok:#168b68;--bad:#c33b62;--pin:#f8cddd;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#351326;--panel:#541d3b;--ink:#fff1f7;--mut:#f2b8d0;--line:#8d3b61;--gold:#ff77b7;--goldbg:#6e294e;--ok:#7ee0a8;--bad:#ff9bb8;--pin:#8d3b61}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#351326;--panel:#541d3b;--ink:#fff1f7;--mut:#f2b8d0;--line:#8d3b61;--gold:#ff77b7;--goldbg:#6e294e;--ok:#7ee0a8;--bad:#ff9bb8;--pin:#8d3b61}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Bricolage Grotesque",system-ui,sans-serif;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:22px 22px}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(28px,6vw,42px);margin:0;font-weight:800;letter-spacing:-.02em}
+h2{font-size:20px;margin:0 0 10px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.top{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-end;margin-bottom:16px}
+.sub{color:var(--mut);margin:4px 0 0}
+.brand{display:flex;align-items:center;gap:10px}.brand-mark{width:46px;height:46px;padding:9px;display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#fff7fb;border:2px solid var(--line);border-radius:15px;box-shadow:0 5px 14px rgba(232,63,143,.13)}.brand-mark i{display:block;border-radius:5px;background:#f36ba8}.brand-mark i:nth-child(2){background:#dc3983}.brand-mark i:nth-child(3){background:#d7357d}.brand-mark i:nth-child(4){background:#f58fc0}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:700}
+.stat small{display:block;color:var(--mut);font-weight:500;font-size:12px}
+.hero{background:var(--panel);border:2px solid var(--gold);border-radius:18px;padding:16px;display:grid;grid-template-columns:minmax(220px,1.1fr) 1fr;gap:16px;align-items:center}
+@media(max-width:640px){.hero{grid-template-columns:1fr}}
+.chip{width:100%;max-width:340px;margin:auto;display:block}
+.pin{fill:var(--pin);transition:fill .3s,filter .3s}
+.pin.on{fill:var(--gold);filter:drop-shadow(0 0 5px var(--gold))}
+.xp{height:12px;background:var(--line);border-radius:8px;overflow:hidden;margin:6px 0}
+.xp i{display:block;height:100%;background:var(--gold);transition:width .5s}
+.add{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+input,select,textarea,button{font:inherit;color:inherit}
+input,select{background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.add input.url{flex:3 1 260px}.add input.role{flex:2 1 160px}
+button{cursor:pointer;border:2px solid var(--ink);background:var(--gold);color:#1b1405;font-weight:700;border-radius:10px;padding:9px 16px}
+button:hover{transform:translateY(-1px)}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.tabs{display:flex;gap:6px;margin:18px 0 12px;flex-wrap:wrap}
+.tabs button{background:var(--panel);color:var(--ink);border-color:var(--line)}
+.tabs button[aria-selected=true]{background:var(--gold);color:#1b1405;border-color:var(--ink)}
+.card{background:var(--panel);border:2px solid var(--line);border-left:8px solid var(--gold);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.card.Applied{border-left-color:#4a8fe0}.card.OA,.card.Interview{border-left-color:#b36be0}.card.Offer{border-left-color:var(--ok)}.card.Rejected{border-left-color:var(--bad);opacity:.7}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.card b{font-size:18px}
+.card a{color:var(--mut);font-size:13px;word-break:break-all}
+.refs{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:14px}
+.refs label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.empty{border:2px dashed var(--line);border-radius:14px;padding:24px;text-align:center;color:var(--mut)}
+.panel{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.panel a{color:var(--ok);font-weight:700}
+.panel ul{margin:6px 0 0;padding-left:20px}
+.tpl{width:100%;min-height:150px;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:10px;resize:vertical}
+.note{background:var(--goldbg);border-radius:10px;padding:10px 12px;font-size:14px}
+.cf{position:fixed;top:-20px;font-size:22px;pointer-events:none;animation:fall 2.2s ease-in forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
+@media(prefers-reduced-motion:reduce){.cf{display:none}*{transition:none!important}}
+.fc{height:270px;margin-bottom:12px}.fi{height:100%;display:grid;transform-style:preserve-3d;transition:transform .6s}.ff,.fb{grid-area:1/1;min-height:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;margin:0!important;overflow-y:auto;overscroll-behavior:contain}.fc.flip .fi{transform:rotateY(180deg)}.fb{transform:rotateY(180deg);visibility:hidden;transition:visibility 0s .3s}.fc.flip .fb{visibility:visible}.fc.flip .ff{visibility:hidden;transition:visibility 0s .3s}
+.card.Accepted{border-left-color:var(--ok)}.sum{margin:0 0 8px;color:var(--mut);font-style:italic}.fld{display:block;margin:8px 0;font-size:14px;color:var(--mut)}.fld input,.fld textarea{display:block;width:100%;margin-top:3px;color:var(--ink)}
+.jobdesc{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px;margin-top:4px;color:var(--ink);max-height:190px;overflow:auto}
+.chip{display:inline-flex;gap:4px;align-items:center;border:2px solid var(--line);border-radius:20px;padding:2px 10px;margin:3px;font-size:14px}.chip.ok{border-color:var(--ok);color:var(--ok)}.bar{height:14px;background:var(--line);border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+.mono-ta{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;min-height:280px}.mini{width:70px!important;display:inline-block!important}
+.fc{touch-action:manipulation}.fc:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:12px}.fc .ff,.fc .fb{-webkit-user-select:none;user-select:none}.fc input,.fc textarea{-webkit-user-select:text;user-select:text}.add textarea{flex:1 1 100%;min-width:0;background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:10px 12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top">
+ <div class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><div><h1>Side Quest</h1><p class="sub">Your hardware-internship command center for Summer 2027.</p></div></div>
+ <div class="stats">
+  <div class="stat mono" id="sDays">0<small>days to June 1, 2027</small></div>
+  <div class="stat mono" id="sStreak">0<small>day streak</small></div>
+  <div class="stat mono" id="sTotal">0<small>applied total</small></div>
+ </div>
+</div>
+
+<section class="hero" aria-label="Today's progress">
+ <svg class="chip" id="chip" viewBox="0 0 320 190" role="img" aria-label="Chip with pins lighting up as you apply"></svg>
+ <div>
+  <h2 id="lvl">Level 1</h2>
+  <div class="xp"><i id="xpbar"></i></div>
+  <p class="sub mono" id="xptxt"></p>
+  <p id="msg" style="font-weight:700;margin:10px 0 4px"></p>
+  <label class="sub">Daily goal <input id="goal" type="number" min="1" max="30" style="width:70px;padding:4px 8px"></label>
+ </div>
+</section>
+
+<form class="add" id="addf" autocomplete="off">
+ <input id="company" type="text" placeholder="Company name" required aria-label="Company name">
+ <input class="role" id="role" type="text" placeholder="Job role" required aria-label="Job role">
+ <input class="url" id="url" type="url" placeholder="Paste the job application link" required aria-label="Job link">
+ <textarea id="jdadd" rows="4" placeholder="Paste the job description. The tracker will create a short skills-and-qualifications summary." required aria-label="Job description"></textarea>
+ <button type="submit">Add job &amp; generate summary</button><span id="aim" class="sub" aria-live="polite"></span>
+</form>
+
+<div class="tabs" role="tablist">
+ <button role="tab" data-t="t">Tracker</button>
+ <button role="tab" data-t="h">History</button>
+ <button role="tab" data-t="p">Projects &amp; experience</button>
+ <button role="tab" data-t="s">Resume tweaker</button>
+ <button role="tab" data-t="a">ChatGPT coach</button>
+ <button role="tab" data-t="c">Compatibility</button>
+ <button role="tab" data-t="q">Today’s quest</button>
+ <button role="tab" data-t="r">Referral hub</button>
+</div>
+<div id="view"></div>
+</div>
+
+<script>
+var $=function(s){return document.querySelector(s)};
+var S;try{S=JSON.parse(localStorage.getItem('chipquest'))}catch(e){}
+S=S||{apps:[],xp:0,goal:7,tab:'t'};S.resume=S.resume||'';S.bank=S.bank||[];S.me=S.me||{name:'',contact:'',edu:'',skills:''};S.gen=S.gen||{ne:3,np:3,nb:3};
+var serverReady=false,serverSaveTimer=0;
+S.apps.forEach(function(a){if(a.stage==='Offer')a.stage='Accepted';if(a.stage==='OA')a.stage='Interview';a.log=a.log||[];a.docs=a.docs||{}});
+function companyName(a){
+ var role=(a.role||'').toLowerCase();
+ if(/mechanical engineer\s*[-–—]\s*hardware design intern/.test(role))return 'Nimble Robotics';
+ if((a.company||'').toLowerCase()==='joinhandshake'&&/software\/computer engineering intern/i.test(a.role||''))return 'McKay';
+ return a.company||'Company';
+}
+function jobSummary(a){
+ var role=(a.role||'').toLowerCase();
+ if(/mechanical engineer\s*[-–—]\s*hardware design intern/.test(role))return 'Design and prototype robotic hardware; support testing, cross-functional integration, DFM, sourcing, and documentation. Skills: CAD, GD&T, mechanism design, prototyping. Qualifications: pursuing BS/MS in mechanical engineering or a related field with hands-on build experience.';
+ return a.sum||'';
+}
+function fixCompanyNames(){S.apps.forEach(function(a){var n=companyName(a);if(a.company!==n)a.company=n;var s=jobSummary(a);if(s&&(!a.sum||/^No description yet\.?$/i.test(a.sum)))a.sum=s})}
+fixCompanyNames();
+function save(){try{localStorage.setItem('chipquest',JSON.stringify(S))}catch(e){}
+ if(serverReady){clearTimeout(serverSaveTimer);serverSaveTimer=setTimeout(syncServer,350)}}
+async function syncServer(){try{await fetch('/api/state',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({state:S})})}catch(e){}}
+async function loadServer(){try{var r=await fetch('/api/state');if(!r.ok)throw 0;var body=await r.json();serverReady=true;if(body.state){S=body.state;S.apps=S.apps||[];S.resume=S.resume||'';S.bank=S.bank||[];S.me=S.me||{name:'',contact:'',edu:'',skills:''};S.gen=S.gen||{ne:3,np:3,nb:3};S.apps.forEach(function(a){a.log=a.log||[];a.docs=a.docs||{};a.ref=a.ref||[0,0,0]});fixCompanyNames();save();draw()}else syncServer()}catch(e){serverReady=false}}
+function today(){return new Date().toLocaleDateString('en-CA')}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+var STAGES=['Saved','Applied','Interview','Accepted','Rejected'];var FL={};
+var LEVELS=[[0,'Transistor'],[40,'Logic Gate'],[120,'Flip-Flop'],[260,'State Machine'],[450,'ALU'],[700,'CPU Core'],[1000,'Tape-Out Hero']];
+
+function guess(u){try{var x=new URL(u),h=x.hostname.replace(/^www\./,''),p=x.pathname.split('/').filter(Boolean);
+ if(/greenhouse\.io|lever\.co|ashbyhq\.com|smartrecruiters\.com/.test(h)&&p[0])return cap(p[0]);
+ if(/myworkdayjobs\.com|icims\.com|taleo\.net/.test(h))return cap(h.split('.')[0]);
+ var l=h.split('.');l=l.filter(function(a){return !/^(careers|jobs|job|apply|boards|www)$/.test(a)});
+ return cap(l.length>1?l[l.length-2]:l[0])}catch(e){return 'Company'}}
+function cap(s){s=decodeURIComponent(s).replace(/[-_]/g,' ');return s.replace(/\b\w/g,function(c){return c.toUpperCase()})}
+
+function appliedToday(){var t=today();return S.apps.filter(function(a){return a.applied===t}).length}
+function streak(){var d=new Date(),n=0,set={};S.apps.forEach(function(a){if(a.applied)set[a.applied]=1});
+ if(!set[d.toLocaleDateString('en-CA')])d.setDate(d.getDate()-1);
+ while(set[d.toLocaleDateString('en-CA')]){n++;d.setDate(d.getDate()-1)}return n}
+function level(){var i=0;LEVELS.forEach(function(l,k){if(S.xp>=l[0])i=k});return i}
+
+function confetti(){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ var e=['⚡','✨','🔧','💾','🎉'];for(var i=0;i<26;i++){var s=document.createElement('span');s.className='cf';s.textContent=e[i%5];
+ s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.6+'s';document.body.appendChild(s);setTimeout(function(x){x.remove()},3200,s)}}
+
+function chip(){var n=appliedToday(),g=S.goal,pins='',w=g>1?(240/(g-1)):0;
+ for(var i=0;i<g;i++){var x=g>1?40+i*w:160;
+  pins+='<rect class="pin'+(i<n?' on':'')+'" x="'+(x-7)+'" y="8" width="14" height="38" rx="3"/><rect class="pin'+(i<n?' on':'')+'" x="'+(x-7)+'" y="144" width="14" height="38" rx="3"/>'}
+ $('#chip').innerHTML=pins+'<rect x="20" y="44" width="280" height="102" rx="12" fill="var(--ink)"/><circle cx="40" cy="64" r="5" fill="var(--bg)"/>'+
+ '<text x="160" y="106" text-anchor="middle" font-size="40" font-weight="800" fill="var(--bg)" font-family="IBM Plex Mono,monospace">'+Math.min(n,99)+' / '+g+'</text>'+
+ '<text x="160" y="130" text-anchor="middle" font-size="13" fill="var(--bg)" font-family="Bricolage Grotesque,sans-serif">applications today</text>'}
+
+function head(){var n=appliedToday(),g=S.goal,L=level(),lo=LEVELS[L][0],hi=LEVELS[L+1]?LEVELS[L+1][0]:lo+1;
+ $('#lvl').textContent='Level '+(L+1)+': '+LEVELS[L][1];
+ $('#xpbar').style.width=(LEVELS[L+1]?Math.min(100,(S.xp-lo)/(hi-lo)*100):100)+'%';
+ $('#xptxt').textContent=S.xp+' XP'+(LEVELS[L+1]?' · '+(hi-S.xp)+' to '+LEVELS[L+1][1]:' · max level');
+ $('#goal').value=g;
+ $('#sDays').firstChild.textContent=Math.max(0,Math.ceil((new Date(2027,5,1)-new Date())/864e5));
+ $('#sStreak').firstChild.textContent=streak();
+ $('#sTotal').firstChild.textContent=S.apps.filter(function(a){return a.applied}).length;
+ $('#msg').textContent=n>=g?'Goal hit. Every pin is lit. Go touch grass.':n===0?'No pins lit yet. Apply to one and get the chip going.':(g-n)+' more to light the whole chip.';
+ chip()}
+
+function award(x){S.xp=Math.max(0,S.xp+x)}
+function setStage(id,st){var a=S.apps.find(function(z){return z.id===id});if(!a)return;var before=appliedToday();
+ a.stage=st;if(st==='Applied'&&!a.applied){a.applied=today();award(10)}
+ if(st==='Interview'&&!a.iv){a.iv=1;award(15)}if(st==='Accepted'&&!a.of){a.of=1;award(50)}a.log=a.log||[];a.log.push({s:st,d:today()});
+ save();draw();if(before<S.goal&&appliedToday()>=S.goal)confetti()}
+
+var QUESTS=['digital design','RTL design','FPGA','embedded firmware','ASIC verification','hardware engineering','VLSI','computer architecture','embedded systems','SoC design','silicon validation','electrical engineering'];
+function qlink(k,t){var q=encodeURIComponent(k+' intern summer 2027');
+ return t==='li'?'https://www.linkedin.com/jobs/search/?keywords='+q+'&f_E=1':'https://www.google.com/search?q='+encodeURIComponent(k+' internship summer 2027 careers apply')}
+function view(){var v=$('#view'),h='';
+ document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.t===S.tab)});
+ if(S.tab==='t'){
+  var act=S.apps.filter(function(a){return a.stage==='Saved'||a.stage==='Applied'||a.stage==='Interview'});
+  if(!act.length)h='<div class="empty"><b>No active jobs.</b><br>Paste a job link above. Finished ones live in History.</div>';
+  act.slice().reverse().forEach(function(a){h+=flip(a)});
+ }else if(S.tab==='h'){h=hist();
+ }else if(S.tab==='p'){h=bank();
+ }else if(S.tab==='a'){h=askUI();
+ }else if(S.tab==='c'){h=compatibilityUI();
+ }else if(S.tab==='s'){h=tool();
+ }else if(S.tab==='q'){
+  var d=Math.floor(Date.now()/864e5),pick=[0,1,2].map(function(i){return QUESTS[(d+i*4)%QUESTS.length]});
+  h='<div class="panel"><h2>Today’s search quests</h2><p class="sub">Open each search, then paste the best postings into the tracker.</p><ul>'+
+  pick.map(function(k){return '<li><b>'+k+'</b> interns: <a href="'+qlink(k,'li')+'" target="_blank" rel="noopener">LinkedIn</a> · <a href="'+qlink(k,'g')+'" target="_blank" rel="noopener">Company career pages</a></li>'}).join('')+
+  '<li>Browse new internships on <a href="https://app.joinhandshake.com/stu/postings" target="_blank" rel="noopener">Handshake</a> (SJSU login)</li></ul></div>'+
+  '<div class="note">Use the ChatGPT coach to turn a job description, project bank, and application question into a focused prompt you can continue in ChatGPT.</div>';
+ }else{
+  h='<div class="note" style="margin-bottom:12px">SJSU’s Career Center says it runs fair recruiting rather than direct placements or referrals, so there is no official “SJSU refers you” program. It does give you real ways to meet people who can refer you.</div>'+
+  '<div class="panel"><h2>SJSU doors to knock on</h2><ul>'+
+  '<li><a href="https://careercenter.sjsu.edu/" target="_blank" rel="noopener">SJSU Career Center</a>: career fairs, employer info sessions, Handshake, counseling</li>'+
+  '<li>SJSU² Mentoring &amp; Meetups: message alumni and pros (find it through the Career Center)</li>'+
+  '<li><a href="https://careercenter.sjsu.edu/resources/job-shadow-program/" target="_blank" rel="noopener">Job Shadow Program</a> and Career Treks</li>'+
+  '<li>Student orgs (IEEE, engineering clubs): officers often know recruiters</li>'+
+  '<li>Professors and lab advisors: ask who they know at hardware companies</li>'+
+  '<li><a href="https://www.linkedin.com/school/san-jose-state-university/people/" target="_blank" rel="noopener">SJSU alumni on LinkedIn</a>: search a company name in the box</li></ul></div>'+
+  '<div class="panel"><h2>Message to an alum</h2><textarea class="tpl" id="tpl" aria-label="Message template">Hi [Name],\n\nI’m an SJSU student studying computer engineering, and I saw you work on [team] at [Company]. I’m applying for the summer 2027 [role] internship and would love a 15-minute chat about your experience.\n\nIf you’re open to it, I’d also really appreciate a referral. Happy to send my resume.\n\nThank you,\n[Your name]</textarea><p><button id="cp">Copy message</button></p></div>';
+ }
+ v.innerHTML=h}
+function fileHref(f){return f&&f.key?'/api/files?key='+encodeURIComponent(f.key):''}
+function fileBadge(f,label){return f&&f.key?'<div class="note" style="margin-top:5px"><a href="'+fileHref(f)+'" target="_blank" rel="noopener">Open '+label+': '+esc(f.name||'PDF')+'</a></div>':''}
+async function uploadPdf(id,kind,input){var file=input.files&&input.files[0];if(!file)return;if(file.type!=='application/pdf'){input.value='';alert('Please choose a PDF file.');return}if(file.size>15*1024*1024){input.value='';alert('PDFs must be 15 MB or smaller.');return}var fd=new FormData();fd.append('file',file);fd.append('appId',String(id));fd.append('kind',kind);input.disabled=true;try{var r=await fetch('/api/files',{method:'POST',body:fd});var body=await r.json();if(!r.ok)throw 0;var a=S.apps.find(function(z){return z.id==id});if(a){a.docs=a.docs||{};a.docs[kind+'File']=body.file;save();view()}}catch(e){alert('The PDF could not be uploaded. Please try again.');input.disabled=false}}
+function flip(a){var d=a.docs||{};
+ var st=STAGES.slice(1).map(function(s){return '<button'+(a.stage===s?'':' class="ghost"')+' data-st="'+a.id+':'+s+'">'+s+'</button>'}).join(' ');
+ return '<div class="fc'+(FL[a.id]?' flip':'')+'" tabindex="0" data-card="'+a.id+'" aria-label="Job card"><div class="fi"><div class="ff card '+a.stage+'">'+
+ '<div class="row"><div><b>'+esc(companyName(a))+'</b><br><strong>'+(a.role?esc(a.role):'Role not added')+'</strong><br><a href="'+esc(a.url)+'" target="_blank" rel="noopener">View job posting</a><p class="sum">'+esc(jobSummary(a)||'No description yet.')+'</p></div><span class="stat">'+a.stage+'</span></div>'+ 
+ '<div class="refs">'+['Found an SJSU alum','Sent a message','Got a referral'].map(function(l,i){return '<label><input type="checkbox" data-rf="'+a.id+':'+i+'"'+(a.ref[i]?' checked':'')+'> '+l+'</label>'}).join('')+'</div>'+
+ '<p class="row" style="margin:10px 0 0"><span>'+(a.stage==='Saved'?'<button data-ap="'+a.id+'">I applied</button>':'')+'</span><span><button class="ghost" data-flip="'+a.id+'" aria-label="Show details">↔</button> <button class="ghost" data-del="'+a.id+'" aria-label="Delete">✕</button></span></p></div>'+ 
+ '<div class="fb card '+a.stage+'"><div class="row"><b>Application details</b><button class="ghost" data-flip="'+a.id+'" aria-label="Show job card">↔</button></div>'+ 
+ '<label class="fld">Short summary<input data-doc="'+a.id+':sum" value="'+esc(a.sum||'')+'"></label>'+ 
+ '<label class="fld">Resume used (name or link)<input data-doc="'+a.id+':resume" value="'+esc(d.resume||'')+'">'+fileBadge(d.resumeFile,'resume PDF')+'<input type="file" accept="application/pdf" data-upload="'+a.id+':resume" aria-label="Upload resume PDF"></label>'+ 
+ '<label class="fld">Cover letter used<input data-doc="'+a.id+':cover" value="'+esc(d.cover||'')+'">'+fileBadge(d.coverFile,'cover letter PDF')+'<input type="file" accept="application/pdf" data-upload="'+a.id+':cover" aria-label="Upload cover letter PDF"></label>'+ 
+ '<label class="fld">Other docs (transcript, portfolio...)<input data-doc="'+a.id+':other" value="'+esc(d.other||'')+'"></label>'+ 
+ '<div class="fld"><b>Job description</b><div class="jobdesc">'+esc(d.jd||'No job description added.')+'</div></div>'+ 
+ '<div class="row" style="margin-top:10px">'+st+'</div></div></div></div>'}
+function hist(){var c={};STAGES.forEach(function(s){c[s]=0});S.apps.forEach(function(a){c[a.stage]++});
+ var h='<div class="stats" style="margin-bottom:12px">'+STAGES.map(function(s){return '<div class="stat mono">'+c[s]+'<small>'+s+'</small></div>'}).join('')+'</div>';
+ if(!S.apps.length)return h+'<div class="empty">No history yet. Add a job and it shows up here.</div>';
+ S.apps.slice().reverse().forEach(function(a){h+='<div class="card '+a.stage+'"><div class="row"><div><b>'+esc(a.company)+'</b>'+(a.role?' · '+esc(a.role):'')+'<br><span class="sub">'+(a.log||[]).map(function(l){return l.s+' '+l.d}).join(' → ')+'</span></div><select data-id="'+a.id+'" aria-label="Status">'+STAGES.map(function(s){return '<option'+(s===a.stage?' selected':'')+'>'+s+'</option>'}).join('')+'</select></div></div>'});return h}
+var JD='',RES_OUT='',LAST=0,STOP={};
+'the and for with you your our are will have has from that this their they who all can able such including must more other into over about work working team teams role roles position years year experience skills ability strong good new use using used plus preferred required requirements responsibilities qualifications looking join make well also within across both what when where which while least NOT must'.split(' ').forEach(function(w){STOP[w.toLowerCase()]=1});
+var TERMS=['verilog','systemverilog','vhdl','fpga','rtl','uvm','vivado','quartus','python','c++','embedded','firmware','rtos','arm','uart','spi','i2c','linux','git','synthesis','timing','asic','cadence','synopsys','matlab','tcl','perl','bash','pcb','oscilloscope','verification','testbench','simulation','modelsim','questa','axi','pcie','ddr','soc','stm32','risc-v','assembly','debug','validation','low power','dft','cmos','spice','altium','kicad','labview','ethernet','amba'];
+function has(t,k){return new RegExp('(^|[^a-z0-9+#])'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\const page = __PAGE__;')+'($|[^a-z0-9+#])').test(t)}
+function tool(){return '<div class="panel"><h2>Resume tweaker</h2><p class="sub">Paste your resume (LaTeX from Overleaf or plain text) and the job post. You will see which keywords you are missing, then you fix it in Overleaf.</p>'+
+ '<label class="fld">Your resume (paste your Overleaf LaTeX. Its header, preamble and education get reused)<textarea class="tpl" data-rs="1" placeholder="In Overleaf: click the editor, Ctrl+A, Ctrl+C, then paste here">'+esc(S.resume)+'</textarea></label>'+
+ '<label class="fld">Job description<textarea class="tpl" id="jd" placeholder="Paste the full job posting">'+esc(JD)+'</textarea></label>'+
+ '<p>Max experiences <input class="mini" type="number" min="1" max="6" data-g="ne" value="'+S.gen.ne+'"> projects <input class="mini" type="number" min="1" max="8" data-g="np" value="'+S.gen.np+'"> bullets each <input class="mini" type="number" min="1" max="6" data-g="nb" value="'+S.gen.nb+'"></p><p><button id="gn">Generate tailored resume</button> <button class="ghost" id="an">Check my match</button></p><div id="gen">'+GEN_OUT+'</div><div class="panel"><h2>ChatGPT resume editor</h2><p class="sub">Describe the changes you want. Side Quest will build a grounded prompt using your current resume, job description, and project bank.</p><textarea class="tpl" id="fbt" style="min-height:70px" aria-label="Your feedback"></textarea><p><button id="fbgo">Prepare ChatGPT prompt</button> <button class="ghost" id="fbundo">Undo last change</button> <span id="fbm" class="sub"></span></p></div><div id="out">'+RES_OUT+'</div></div>'+ 
+ '<div class="note">Only add keywords for things you have really done. Recruiters and interviewers will ask about them. This page can’t connect to Overleaf, so copy and paste both ways.</div>'}
+function analyze(){var res=S.resume,jl=JD.toLowerCase(),rl=res.toLowerCase().replace(/\\[a-z]+\*?(\[[^\]]*\])?/g,' ').replace(/[{}]/g,' ');
+ if(!res.trim()||!JD.trim()){$('#out').innerHTML='<p class="note">Paste both your resume and the job description first.</p>';return}
+ var found=TERMS.filter(function(k){return has(jl,k)}),cnt={};
+ (jl.match(/[a-z][a-z0-9+#]{3,}/g)||[]).forEach(function(w){if(!STOP[w])cnt[w]=(cnt[w]||0)+1});
+ Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]}).filter(function(w){return cnt[w]>=3&&found.indexOf(w)<0}).slice(0,12).forEach(function(w){found.push(w)});
+ var ok=found.filter(function(k){return has(rl,k)}),miss=found.filter(function(k){return ok.indexOf(k)<0}),sc=found.length?Math.round(ok.length/found.length*100):0;LAST=sc;
+ var w=(rl.match(/\S+/g)||[]).length,ch=[];function c(g,m){ch.push((g?'✓ ':'⚠ ')+m)}
+ c(/@/.test(res),'Email address found');c(/\d{3}[-.\s)]*\d{3}[-.\s]*\d{4}/.test(res),'Phone number found');
+ ['education','experience','projects','skills'].forEach(function(s){c(rl.indexOf(s)>-1,'“'+s+'” section heading')});
+ c(!/includegraphics/.test(res),'No images or icons (they can confuse ATS)');c(!/\\begin\{tabular|multicol/.test(res),'No tables or columns (they can scramble the reading order)');
+ c(w<=650,'About '+w+' words'+(w>650?', may spill past one page':''));c((res.match(/\d+\s?%|\d+x\b|\$\d+/g)||[]).length>=3,'Numbers in your bullets (add results like “20% faster”)');
+ var opts=S.apps.map(function(a){return '<option value="'+a.id+'">'+esc(a.company+(a.role?' · '+a.role:''))+'</option>'}).join('');
+ RES_OUT='<h2>Keyword match: '+sc+'%</h2><div class="bar"><i style="width:'+sc+'%"></i></div>'+
+ '<p><b>You have</b><br>'+(ok.map(function(k){return '<span class="chip ok">'+esc(k)+'</span>'}).join('')||'none yet')+'</p>'+
+ '<p><b>Missing</b> (tick the ones you really have)<br>'+(miss.map(function(k){return '<label class="chip"><input type="checkbox" data-kw="'+esc(k)+'"> '+esc(k)+'</label>'}).join('')||'nothing, nice')+'</p>'+
+ '<p class="note" id="skl">Tick the ones you really have and I will build a Skills line.</p><h2 style="margin-top:14px">ATS check</h2><ul>'+ch.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'+
+ (opts?'<p><select id="jobsel">'+opts+'</select> <button id="mark">Note this tweak on a job</button></p>':'');
+ $('#out').innerHTML=RES_OUT}
+var GEN_OUT='';
+$('#view').addEventListener('click',function(e){if(e.target.id!=='impb')return;var r=$('#imp').value.trim().replace(/^```(json)?|```$/g,'').trim();
+ try{var arr=JSON.parse(r);if(!Array.isArray(arr))throw 0;var n=0;arr.forEach(function(x,i){if(!x||!x.title)return;S.bank.push({id:Date.now()+i,type:x.type==='Experience'?'Experience':'Project',title:String(x.title),org:String(x.org||''),dates:String(x.dates||''),tags:Array.isArray(x.tags)?x.tags.join(', '):String(x.tags||''),bullets:Array.isArray(x.bullets)?x.bullets.join('\n'):String(x.bullets||'')});n++});save();view();$('#impm').textContent='Added '+n+' items.'}
+ catch(er){$('#impm').textContent='That did not look like the import block. Paste the JSON import block here.'}});
+function bank(){var m=S.me,h='<div class="panel"><h2>About me</h2><p class="sub">Used for the header, education and skills of your generated resume.</p>'+
+ '<label class="fld">Name<input data-me="name" value="'+esc(m.name)+'"></label><label class="fld">Contact line (email | phone | LinkedIn | GitHub)<input data-me="contact" value="'+esc(m.contact)+'"></label>'+
+ '<label class="fld">Education (one entry per line: school, degree, dates, GPA)<textarea class="tpl" data-me="edu">'+esc(m.edu)+'</textarea></label>'+
+ '<label class="fld">All your skills (comma separated)<textarea class="tpl" style="min-height:70px" data-me="skills">'+esc(m.skills)+'</textarea></label></div>'+
+ '<div class="panel"><h2>Add a project or experience</h2><div class="add"><select id="bt"><option>Experience</option><option>Project</option></select><input class="url" id="bti" placeholder="Title (e.g. FPGA UART Controller)"><input class="role" id="bto" placeholder="Company or course"><input class="role" id="btd" placeholder="Dates (Jun 2026 - Aug 2026)"></div>'+
+ '<label class="fld">Tech and skills used (comma separated)<input id="btg"></label><label class="fld">What you did (one bullet per line, add numbers if you can)<textarea class="tpl" id="btb" style="min-height:100px"></textarea></label><p><button id="addbk">Save to my bank</button></p></div>';
+ h+='<div class="panel"><h2>Import project bank</h2><p class="sub">Paste the JSON project/experience block from any ChatGPT conversation.</p><textarea class="tpl" id="imp" style="min-height:80px" aria-label="Import block" placeholder="Paste the JSON import block"></textarea><p><button id="impb">Import</button> <span id="impm" class="sub"></span></p></div>';
+ if(!S.bank.length)return h+'<div class="empty"><b>Your bank is empty.</b><br>Add every project and job you have. The tweaker picks only the relevant ones for each job.</div>';
+ S.bank.forEach(function(b){h+='<div class="card"><div class="row"><div><b>'+esc(b.title)+'</b>'+(b.org?' \u00b7 '+esc(b.org):'')+'<br><span class="sub">'+b.type+' \u00b7 '+esc(b.dates)+'</span></div><button class="ghost" data-bdel="'+b.id+'" aria-label="Delete">\u2715</button></div>'+
+  '<label class="fld">Dates (e.g. Aug 2026 -- Present)<input data-bk="'+b.id+':dates" value="'+esc(b.dates)+'"></label><label class="fld">Company or course<input data-bk="'+b.id+':org" value="'+esc(b.org)+'"></label><label class="fld">Tech<input data-bk="'+b.id+':tags" value="'+esc(b.tags)+'"></label><label class="fld">Bullets<textarea class="tpl" style="min-height:90px" data-bk="'+b.id+':bullets">'+esc(b.bullets)+'</textarea></label></div>'});return h}
+function tex(s){return String(s).replace(/[\\&%$#_{}~^]/g,function(c){return {'\\':'\\textbackslash{}','~':'\\textasciitilde{}','^':'\\textasciicircum{}'}[c]||'\\'+c})}
+function kws(jl){var f=TERMS.filter(function(k){return has(jl,k)}),n={};(jl.match(/[a-z][a-z0-9+#]{3,}/g)||[]).forEach(function(w){if(!STOP[w])n[w]=(n[w]||0)+1});Object.keys(n).sort(function(a,b){return n[b]-n[a]}).filter(function(w){return n[w]>=3&&f.indexOf(w)<0}).slice(0,12).forEach(function(w){f.push(w)});return f}
+function hits(t,K){t=t.toLowerCase();return K.filter(function(k){return has(t,k)}).length}
+function compatibility(a){
+ var job=((a.role||'')+' '+(a.sum||'')+' '+((a.docs||{}).jd||'')).toLowerCase();
+ var profile=('computer engineering digital design hardware engineering fpga rtl verilog systemverilog vhdl vivado xsim basys 3 digital logic fsm testbench simulation synthesis hardware debugging python c c++ assembly git embedded firmware robotics controls '+(S.me.skills||' ')+' '+S.bank.map(function(b){return b.title+' '+b.tags+' '+b.bullets}).join(' ')).toLowerCase();
+ var terms=kws(job).filter(function(k){return k.length>2}),matched=terms.filter(function(k){return has(profile,k)}),missing=terms.filter(function(k){return !has(profile,k)});
+ var majorTerms=['computer engineering','computer','hardware','digital','embedded','firmware','fpga','rtl','verification','validation','robotics','controls','electrical','software'];
+ var majorMatch=majorTerms.some(function(k){return has(job,k)});
+ var skillScore=terms.length?Math.round(matched.length/terms.length*100):50;
+ var score=Math.max(0,Math.min(100,Math.round(skillScore*.75+(majorMatch?25:0))));
+ var recommendation=score>=65?'Apply':score>=40?'Consider':'Low match';
+ return {score:score,recommendation:recommendation,matched:matched.slice(0,8),missing:missing.slice(0,8),majorMatch:majorMatch,terms:terms};
+}
+function compatibilityUI(){
+ var apps=S.apps.filter(function(a){return a.stage!=='Rejected'});
+ if(!apps.length)return '<div class="empty"><b>No jobs to compare yet.</b><br>Add a posting above and it will appear here.</div>';
+ var h='<div class="panel"><h2>Should I apply?</h2><p class="sub">This compares each posting with your Computer Engineering focus, saved skills, and Projects &amp; experience. It is a screening aid—not a reason to skip a role automatically.</p></div>';
+ apps.slice().reverse().forEach(function(a){var x=compatibility(a),color=x.score>=65?'var(--ok)':x.score>=40?'var(--gold)':'var(--bad)';
+  h+='<div class="panel"><div class="row"><div><h2 style="margin:0">'+esc(companyName(a))+'</h2><div class="sub">'+esc(a.role||'Role not added')+'</div></div><span class="stat" style="border-color:'+color+';color:'+color+'">'+x.score+'% · '+x.recommendation+'</span></div>';
+  h+='<div class="bar" style="margin:12px 0 10px"><i style="width:'+x.score+'%;background:'+color+'"></i></div>';
+  h+='<p><b>Why:</b> '+(x.majorMatch?'The role connects to your Computer Engineering background. ':'The role has limited direct Computer Engineering overlap. ')+(x.matched.length?'Your background matches '+x.matched.slice(0,4).join(', ')+'.':'No strong saved-skill matches were found.')+'</p>';
+  h+='<p><b>Matched:</b> '+(x.matched.length?x.matched.join(', '):'None identified')+'</p><p><b>Gaps to review:</b> '+(x.missing.length?x.missing.join(', '):'No major gaps identified')+'</p>';
+  h+='<a href="'+esc(a.url)+'" target="_blank" rel="noopener">View job posting</a></div>';
+ });
+ return h;
+}
+function pickB(t,n,K){return S.bank.filter(function(b){return b.type===t}).map(function(b){return {b:b,s:hits(b.title+' '+b.tags+' '+b.bullets,K)}}).sort(function(a,c){return c.s-a.s}).slice(0,n)}
+function topB(b,K,n){return b.bullets.split('\n').map(function(s){return s.trim().replace(/^[-*\u2022]\s*/,'')}).filter(Boolean).map(function(s,i){return {s:s,k:hits(s,K),i:i}}).sort(function(a,c){return c.k-a.k||a.i-c.i}).slice(0,n)}
+function entT(b,right,K,n){return '    \\begin{twocolentry}{'+tex(right)+'}\n        \\textbf{'+tex(b.title)+'}'+(b.org?', '+tex(b.org):'')+'\n    \\end{twocolentry}\n\n    \\vspace{0.04 cm}\n\n    \\begin{onecolentry}\n        \\begin{highlights}\n'+topB(b,K,n).map(function(y){return '            \\item '+tex(y.s)}).join('\n')+'\n        \\end{highlights}\n    \\end{onecolentry}\n\n    \\vspace{0.11 cm}\n\n'}
+function genT(K,res,g,o){
+ var end=res.indexOf('\\end{document}'),ms=[],re=/\\section\*?\{([^}]*)\}/g,x;
+ while((x=re.exec(res)))ms.push({n:x[1],i:x.index});
+ if(!ms.length){o.innerHTML='<p class="note">I could not find any section in your resume.</p>';return}
+ var hd=res.slice(0,ms[0].i).replace(/\{\s*$/,'');
+ ms.forEach(function(s,k){s.b=res.slice(s.i,k+1<ms.length?ms[k+1].i:(end>0?end:res.length))});
+ function nm(r){var f=ms.filter(function(s){return r.test(s.n)})[0];return f?f.n:null}
+ var keep=ms.filter(function(s){return /summary|education/i.test(s.n)}).map(function(s){return s.b.replace(/\s*$/,'\n\n')}).join('');
+ var tP=nm(/project/i)||'TECHNICAL PROJECTS',tE=nm(/experience/i)||'EXPERIENCE',sk=ms.filter(function(s){return /skill/i.test(s.n)})[0],skb='';
+ if(sk)skb=sk.b.replace(/(\\textbf\{[^}]*:\}\s*)([^\n]*)/g,function(a,l,it){var arr=it.split(',').map(function(s,i){return {s:s.trim(),i:i,h:hits(s,K)}}).filter(function(z){return z.s});arr.sort(function(p,q){return q.h-p.h||p.i-q.i});return l+arr.map(function(z){return z.s}).join(', ')});
+ else if(S.me.skills.trim())skb='    \\section{TECHNICAL SKILLS}\n\n    \\begin{onecolentry}\n        '+S.me.skills.split(',').map(function(s){return tex(s.trim())}).filter(Boolean).join(', ')+'\n    \\end{onecolentry}\n';
+ var ex=pickB('Experience',g.ne,K),pr=pickB('Project',g.np,K);
+ var out=hd+keep+(pr.length?'    \\section{'+tP+'}\n\n'+pr.map(function(p){var t=p.b.tags.split(',').map(function(s,i){return {s:s.trim(),h:hits(s,K),i:i}}).filter(function(z){return z.s}).sort(function(a,c){return c.h-a.h||a.i-c.i}).slice(0,4).map(function(z){return z.s}).join(', ');return entT(p.b,t,K,g.nb)}).join(''):'')+(ex.length?'    \\section{'+tE+'}\n\n'+ex.map(function(p){return entT(p.b,p.b.dates,K,g.nb)}).join(''):'')+(skb?skb.replace(/\s*$/,'\n\n'):'')+'\\end{document}\n';
+ var cov=K.length?Math.round(hits(out,K)/K.length*100):0,dd=dep(out);
+ GEN_OUT=(dd?'<p class="note">Warning: the curly braces do not match ('+(dd>0?dd+' extra {':(-dd)+' extra }')+').</p>':'')+'<h2>Generated resume (LaTeX)</h2><p class="sub">Covers '+cov+'% of the job keywords. Picked: '+pr.concat(ex).map(function(x){return esc(x.b.title)+' ('+x.s+' hits)'}).join(', ')+'. Your header, Summary and Education are kept as they are, and the best-matching skills are moved first.</p><textarea class="tpl mono-ta" id="gtex" readonly aria-label="Generated LaTeX">'+esc(out)+'</textarea><p><button id="cpg">Copy LaTeX</button></p><p class="note">In Overleaf: open intuitive.tex, select all, paste, then Recompile. If it runs past one page, lower the number boxes above and generate again.</p>';
+ o.innerHTML=GEN_OUT}
+var UNDO=[];
+function openChatGPTPrompt(prompt,statusEl){
+ try{navigator.clipboard.writeText(prompt)}catch(er){var ta=document.createElement('textarea');ta.value=prompt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
+ var w=window.open('https://chatgpt.com/','_blank','noopener');
+ if(statusEl)statusEl.textContent=w?'Prompt copied. ChatGPT opened in a new tab. Paste it there.':'Prompt copied. Open ChatGPT and paste it there.';
+}
+$('#view').addEventListener('click',async function(e){var t=e.target,m=$('#fbm'),ta=$('#gtex');
+ if(t.id==='fbundo'){if(ta&&UNDO.length){var u=UNDO.pop();ta.value=u;ta.textContent=u;GEN_OUT=$('#gen').innerHTML;m.textContent='Undone.'}else if(m)m.textContent='Nothing to undo.';return}
+ if(t.id!=='fbgo')return;var fb=$('#fbt').value.trim();
+ if(!ta){m.textContent='Generate a resume first.';return}if(!fb){m.textContent='Type what you want changed.';return}
+ t.disabled=true;m.textContent='Preparing ChatGPT prompt...';
+ var bank=S.bank.map(function(b){return {type:b.type,title:b.title,org:b.org,dates:b.dates,tags:b.tags,bullets:b.bullets}});
+ var prompt='You edit a LaTeX resume for a student. Apply the FEEDBACK to the CURRENT LATEX.\nRules:\n- Keep the same template commands and the same preamble and header. Change only what the feedback needs.\n- Use only facts, skills, numbers and bullets from the BANK or the current resume. Never invent anything. If the feedback asks for something that is not in the BANK, leave it out and say so in NOTES.\n- Follow both what the user wants and what the user does not want, exactly.\n- Reply with one line starting NOTES: (one or two simple sentences about what you changed or could not change), then the full updated LaTeX between a line <<<LATEX and a line LATEX>>>. Nothing else.\n\nFEEDBACK:\n'+fb+'\n\nJOB DESCRIPTION:\n'+JD+'\n\nBANK:\n'+JSON.stringify(bank)+'\n\nCURRENT LATEX:\n'+ta.value;
+ openChatGPTPrompt(prompt,m);
+ t.disabled=false});
+var CHAT=[],ASKJOB='';
+function chatHtml(){return CHAT.map(function(c,i){return '<div class="panel"><b>'+esc(c.q)+'</b><p style="white-space:pre-wrap">'+esc(c.a)+'</p><button class="ghost" data-acp="'+i+'">Copy answer</button></div>'}).join('')}
+function askUI(){var opts='<option value="">No specific job</option>'+S.apps.map(function(a){return '<option value="'+a.id+'"'+(String(a.id)===ASKJOB?' selected':'')+'>'+esc(a.company+(a.role?' \u00b7 '+a.role:''))+'</option>'}).join('');
+ var chips=['Why do you want to work at this company?','Why are you interested in this role?','Tell me about yourself','Tell me about a challenging project','What are your strengths and weaknesses?','Why should we hire you?'].map(function(q){return '<button class="ghost" data-q="'+esc(q)+'">'+esc(q)+'</button>'}).join(' ');
+ return '<div class="panel"><h2>ChatGPT coach</h2><p class="sub">Ask any application or interview question. Side Quest builds a grounded prompt from your projects, experience, and the selected job.</p>'+ 
+ '<label class="fld">Job (optional)<select id="ajob">'+opts+'</select></label><label class="fld">Length<select id="alen"><option value="about 80 words">Short</option><option value="about 150 words" selected>Medium</option><option value="about 250 words">Long</option></select></label>'+
+ '<p>'+chips+'</p><label class="fld">Your question (or a follow-up like “make it shorter”)<textarea class="tpl" id="aq" style="min-height:80px" placeholder="Paste the question from the application"></textarea></label><p><button id="ago">Ask</button> <span id="am" class="sub"></span></p></div><div id="achat">'+chatHtml()+'</div>'}
+async function ask(q){var m=$('#am');if(!q.trim()){m.textContent='Type a question first.';return}
+ ASKJOB=$('#ajob').value;var a=S.apps.find(function(z){return String(z.id)===ASKJOB}),len=$('#alen').value,me=S.me;
+ var bank=S.bank.map(function(b){return {type:b.type,title:b.title,org:b.org,dates:b.dates,tags:b.tags,bullets:b.bullets}});
+ var job=a?'Company: '+a.company+'\nRole: '+(a.role||'')+'\nSummary: '+(a.sum||'')+'\nJob description: '+((a.docs&&a.docs.jd)||''):'No specific job picked.';
+ var hist=CHAT.slice(0,3).reverse().map(function(c){return 'Q: '+c.q+'\nA: '+c.a}).join('\n\n');
+ var prompt='You help a student write answers to job application and interview questions.\nRules:\n- Write in first person, in simple, natural, honest language. Answer in '+len+'.\n- Use only facts, skills and numbers from ABOUT ME and BANK. Never invent experience, numbers or claims.\n- For why-this-company questions, use only the job details given and well-known public facts you are sure of. If you need a company detail you do not have, write it in [square brackets] for the student to fill in.\n- If the question is a follow-up such as make it shorter, rewrite the previous answer in HISTORY.\n- Give only the answer text, with no intro.\n\nABOUT ME:\nGoal: a summer 2027 internship in hardware, digital design or embedded.\nName: '+(me.name||'')+'\nEducation: '+(me.edu||'')+'\nSkills: '+(me.skills||'')+'\n\nBANK:\n'+JSON.stringify(bank)+'\n\nJOB:\n'+job+'\n\nHISTORY:\n'+hist+'\n\nQUESTION:\n'+q;
+ $('#ago').disabled=true;m.textContent='Preparing ChatGPT prompt...';
+ openChatGPTPrompt(prompt,m);
+ if($('#ago'))$('#ago').disabled=false}
+$('#view').addEventListener('click',function(e){var t=e.target;
+ if(t.id==='ago')ask($('#aq').value);
+ if(t.dataset.q){$('#aq').value=t.dataset.q;ask(t.dataset.q)}
+ if(t.dataset.acp!==undefined){var x=CHAT[+t.dataset.acp];if(x){try{navigator.clipboard.writeText(x.a)}catch(er){}t.textContent='Copied'}}});
+function dep(s){s=s.replace(/\\[{}]/g,'');return (s.match(/\{/g)||[]).length-(s.match(/\}/g)||[]).length}
+function generate(){var o=$('#gen');if(!JD.trim()){o.innerHTML='<p class="note">Paste the job description first.</p>';return}
+ if(!S.bank.length){o.innerHTML='<p class="note">Add your projects and experience in the Projects &amp; experience tab first.</p>';return}
+ var K=kws(JD.toLowerCase()),m=S.me,g=S.gen,res=S.resume,hd='',edu=null;if(/\\begin\{twocolentry\}/.test(res))return genT(K,res,g,o);
+ if(/\\begin\{document\}/.test(res)){var i=res.search(/\\section/);hd=i>0?res.slice(0,i):res.slice(0,res.indexOf('\\begin{document}')+16)+'\n';var em=res.match(/\\section\*?\{Education\}[\s\S]*?(?=\\section|\\end\{document\})/);edu=em?em[0]:null}
+ else hd='\\documentclass[10pt]{article}\n\\usepackage[margin=0.6in]{geometry}\n\\usepackage[hidelinks]{hyperref}\n\\usepackage{titlesec}\n\\titleformat{\\section}{\\large\\bfseries}{}{0em}{}[\\titlerule]\n\\titlespacing*{\\section}{0pt}{8pt}{4pt}\n\\pagestyle{empty}\\setlength{\\parindent}{0pt}\n\\begin{document}\n\\begin{center}{\\Huge\\bfseries '+tex(m.name||'Your Name')+'}\\par '+tex(m.contact)+'\\end{center}\n';
+ hd=hd.replace(/\{\s*$/,'');if(edu){edu=edu.replace(/\s*\{\s*$/,'\n');while(dep(edu)<0&&/\}\s*$/.test(edu))edu=edu.replace(/\}(\s*)$/,'$1')}
+ if(edu===null)edu=m.edu.trim()?'\\section{Education}\n'+m.edu.split('\n').filter(function(l){return l.trim()}).map(function(l){return '\\noindent '+tex(l)+'\\par'}).join('\n')+'\n':'';
+ function pick(t,n){return S.bank.filter(function(b){return b.type===t}).map(function(b){return {b:b,s:hits(b.title+' '+b.tags+' '+b.bullets,K)}}).sort(function(a,c){return c.s-a.s}).slice(0,n)}
+ function block(x){var b=x.b,bl=b.bullets.split('\n').map(function(s){return s.trim().replace(/^[-*\u2022]\s*/,'')}).filter(Boolean).map(function(s){return {s:s,k:hits(s,K)}}).sort(function(a,c){return c.k-a.k}).slice(0,g.nb);
+  return '\\noindent\\textbf{'+tex(b.title)+'}'+(b.org?' | \\textit{'+tex(b.org)+'}':'')+' \\hfill '+tex(b.dates)+'\n\\begin{itemize}\\setlength\\itemsep{0pt}\\setlength\\topsep{2pt}\n'+bl.map(function(y){return '\\item '+tex(y.s)}).join('\n')+'\n\\end{itemize}\n'}
+ var ex=pick('Experience',g.ne),pr=pick('Project',g.np);
+ var sk=m.skills.split(',').map(function(s){return s.trim()}).filter(Boolean).sort(function(a,b){return hits(b,K)-hits(a,K)});
+ var out=hd+edu+(ex.length?'\\section{Experience}\n'+ex.map(block).join(''):'')+(pr.length?'\\section{Projects}\n'+pr.map(block).join(''):'')+(sk.length?'\\section{Skills}\n\\noindent '+sk.map(tex).join(', ')+'\\par\n':'')+'\\end{document}\n';
+ var cov=K.length?Math.round(hits(out,K)/K.length*100):0;var dd=dep(out);
+ GEN_OUT=(dd?'<p class="note">Warning: the curly braces do not match ('+(dd>0?dd+' extra {':(-dd)+' extra }')+'). Look at the lines just above each \\section in the LaTeX, or use the ChatGPT coach for help.</p>':'')+'<h2>Generated resume (LaTeX)</h2><p class="sub">Covers '+cov+'% of the job keywords. Picked: '+ex.concat(pr).map(function(x){return esc(x.b.title)+' ('+x.s+' hits)'}).join(', ')+'</p>'+ 
+ '<textarea class="tpl mono-ta" id="gtex" readonly aria-label="Generated LaTeX">'+esc(out)+'</textarea><p><button id="cpg">Copy LaTeX</button></p><p class="note">In Overleaf: open main.tex, select all, paste, then Recompile. Check that it fits on one page, and cut bullets with the number boxes above if not.</p>';
+ o.innerHTML=GEN_OUT}
+function summarize(jd){jd=(jd||'').trim();if(!jd)return '';var K=kws(jd.toLowerCase()),ss=jd.replace(/\s+/g,' ').split(/[.!?] /).filter(function(s){return s.length>40&&s.length<300});
+ var b=ss.sort(function(x,y){return hits(y,K)-hits(x,K)})[0]||jd.replace(/\s+/g,' ').slice(0,140);if(b.length>150)b=b.slice(0,147).replace(/\s+\S*$/,'')+'...';
+ return b.replace(/[.!?]$/,'')+'.'+(K.length?' Key skills: '+K.slice(0,5).join(', ')+'.':'')}
+function generateJobSummary(jd){
+ jd=(jd||'').replace(/\s+/g,' ').trim();if(!jd)return '';
+ var lower=jd.toLowerCase(),skills=[],quals=[];
+ ['python','java','javascript','c++','matlab','sql','git','linux','embedded','fpga','verilog','vhdl','cad','solidworks','autocad','simulink','robotics','controls','testing','debugging','data analysis','machine learning','communication','project management'].forEach(function(k){if(lower.indexOf(k)>=0)skills.push(k)});
+ var parts=jd.split(/(?<=[.!?])\s+/).filter(function(s){return s.length>25});
+ parts.forEach(function(s){if(/qualif|require|must have|currently enrolled|pursuing|degree|student|experience/.test(s.toLowerCase())&&quals.length<2)quals.push(s.trim())});
+ var opening=parts.find(function(s){return !/posted|apply by|save|share|equal opportunity/.test(s.toLowerCase())})||jd;
+ opening=opening.slice(0,170).replace(/\s+\S*$/,'');
+ var out=opening.replace(/[.!?]$/,'')+'.';
+ if(skills.length)out+=' Skills: '+skills.slice(0,7).join(', ')+'.';
+ if(quals.length)out+=' Qualifications: '+quals.join(' ').slice(0,220).replace(/\s+\S*$/,'')+'.';
+ return out;
+}
+function flipEl(el){var c=el.closest('.fc');if(c){FL[c.dataset.card]=!FL[c.dataset.card];c.classList.toggle('flip',!!FL[c.dataset.card])}}
+function draw(){head();view()}
+$('#view').addEventListener('dblclick',function(e){if(e.target.closest('input,textarea,button,select,a,label'))return;flipEl(e.target)});
+var lastTap=0;$('#view').addEventListener('touchend',function(e){if(e.target.closest('input,textarea,button,select,a,label'))return;var now=Date.now();if(now-lastTap<380){flipEl(e.target);e.preventDefault()}lastTap=now});
+$('#view').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.classList.contains('fc'))flipEl(e.target)});
+$('#view').addEventListener('click',function(e){var t=e.target;if(t.dataset.sum){var a=S.apps.find(function(z){return z.id==t.dataset.sum});if(a&&a.docs.jd&&a.docs.jd.trim()){a.sum=summarize(a.docs.jd);save();view()}else t.textContent='Paste the job description first'}});
+$('#view').addEventListener('click',function(e){var t=e.target;
+ if(t.id==='addbk'){var ti=$('#bti').value.trim();if(!ti)return;S.bank.push({id:Date.now(),type:$('#bt').value,title:ti,org:$('#bto').value.trim(),dates:$('#btd').value.trim(),tags:$('#btg').value.trim(),bullets:$('#btb').value});save();view()}
+ if(t.dataset.bdel){S.bank=S.bank.filter(function(z){return z.id!=t.dataset.bdel});save();view()}
+ if(t.id==='gn')generate();
+ if(t.id==='cpg'){var x=$('#gtex');x.select();try{navigator.clipboard.writeText(x.value)}catch(er){document.execCommand('copy')}t.textContent='Copied'}});
+$('#view').addEventListener('input',function(e){var t=e.target,p;
+ if(t.dataset.me)S.me[t.dataset.me]=t.value;
+ if(t.dataset.g)S.gen[t.dataset.g]=Math.max(1,+t.value||1);
+ if(t.dataset.bk){p=t.dataset.bk.split(':');var b=S.bank.find(function(z){return z.id==p[0]});if(b)b[p[1]]=t.value}save()});
+$('#view').addEventListener('click',function(e){var t=e.target;
+ if(t.dataset.fl){FL[t.dataset.fl]=!FL[t.dataset.fl];view()}
+ if(t.dataset.flip){FL[t.dataset.flip]=!FL[t.dataset.flip];view()}
+ if(t.dataset.st){var p=t.dataset.st.split(':');setStage(+p[0],p[1])}
+ if(t.id==='an')analyze();
+ if(t.id==='mark'){var a=S.apps.find(function(z){return z.id==$('#jobsel').value});if(a){a.docs.resume='Tweaked resume, '+LAST+'% keyword match ('+today()+')';if(!a.docs.jd)a.docs.jd=JD;if(!a.sum)a.sum=summarize(JD);save();t.textContent='Noted on the card'}}});
+$('#view').addEventListener('input',function(e){var t=e.target;
+ if(t.dataset.rs)S.resume=t.value;if(t.id==='jd')JD=t.value;
+ if(t.dataset.doc){var p=t.dataset.doc.split(':'),a=S.apps.find(function(z){return z.id==p[0]});if(a){if(p[1]==='sum')a.sum=t.value;else a.docs[p[1]]=t.value}}save()});
+$('#view').addEventListener('change',function(e){var t=e.target;if(t.dataset.upload){var p=t.dataset.upload.split(':');uploadPdf(+p[0],p[1],t)}});
+$('#view').addEventListener('change',function(e){if(e.target.dataset.kw){var k=[].slice.call(document.querySelectorAll('[data-kw]:checked')).map(function(x){return x.dataset.kw});$('#skl').textContent=k.length?'Add to your Skills line: '+k.join(', '):'Tick the ones you really have and I will build a Skills line.'}});
+
+function normalizeJobUrl(u){try{var x=new URL(u);x.hash='';['utm_source','utm_medium','utm_campaign','utm_term','utm_content','page','per_page'].forEach(function(k){x.searchParams.delete(k)});return x.toString().replace(/\/$/,'').toLowerCase()}catch(e){return String(u||'').trim().toLowerCase().replace(/\/$/,'')}}
+function existingJob(company,role,url){var c=company.toLowerCase().replace(/\s+/g,' ').trim(),r=role.toLowerCase().replace(/\s+/g,' ').trim(),u=normalizeJobUrl(url);return S.apps.find(function(a){return normalizeJobUrl(a.url)===u||((a.company||'').toLowerCase().replace(/\s+/g,' ').trim()===c&&(a.role||'').toLowerCase().replace(/\s+/g,' ').trim()===r)})}
+$('#addf').addEventListener('submit',function(e){e.preventDefault();var c=$('#company').value.trim(),r=$('#role').value.trim(),u=$('#url').value.trim(),jd=$('#jdadd').value.trim(),m=$('#aim');if(!c||!r||!u||!jd)return;
+ var old=existingJob(c,r,u);if(old){var duplicateMessage='Already '+String(old.stage||'saved').toLowerCase()+': '+companyName(old)+' — '+(old.role||r)+'. This job is already in your tracker.';S.tab='t';draw();$('#aim').textContent=duplicateMessage;return;}
+ var summary=generateJobSummary(jd),newJob={id:Date.now(),url:u,company:c,role:r,sum:summary,stage:'Saved',added:today(),ref:[0,0,0],docs:{jd:jd},log:[{s:'Saved',d:today()}]};S.apps.push(newJob);
+ var fit=compatibility(newJob);award(2);save();$('#company').value='';$('#role').value='';$('#url').value='';$('#jdadd').value='';m.textContent='Added '+c+' — '+r+' · Compatibility: '+fit.score+'% ('+fit.recommendation+')';S.tab='c';draw()});
+$('#goal').addEventListener('change',function(){S.goal=Math.max(1,Math.min(30,+this.value||7));save();draw()});
+document.querySelector('.tabs').addEventListener('click',function(e){var t=e.target.dataset.t;if(t){S.tab=t;save();view()}});
+$('#view').addEventListener('change',function(e){var t=e.target;
+ if(t.dataset.id)setStage(+t.dataset.id,t.value);
+ if(t.dataset.rf){var p=t.dataset.rf.split(':'),a=S.apps.find(function(z){return z.id==p[0]});a.ref[p[1]]=t.checked?1:0;award(t.checked?5:-5);save();head()}});
+$('#view').addEventListener('click',function(e){var t=e.target;
+ if(t.dataset.ap)setStage(+t.dataset.ap,'Applied');
+ if(t.dataset.del){S.apps=S.apps.filter(function(z){return z.id!=t.dataset.del});save();draw()}
+ if(t.id==='cp'){var x=$('#tpl');x.select();try{navigator.clipboard.writeText(x.value)}catch(er){document.execCommand('copy')}t.textContent='Copied'}});
+draw();loadServer();
+</script>
+</body>
+</html>
