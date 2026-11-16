@@ -61,6 +61,8 @@ button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
 .fc{height:270px;margin-bottom:12px}.fi{height:100%;display:grid;transform-style:preserve-3d;transition:transform .6s}.ff,.fb{grid-area:1/1;min-height:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;margin:0!important;overflow-y:auto;overscroll-behavior:contain}.fc.flip .fi{transform:rotateY(180deg)}.fb{transform:rotateY(180deg);visibility:hidden;transition:visibility 0s .3s}.fc.flip .fb{visibility:visible}.fc.flip .ff{visibility:hidden;transition:visibility 0s .3s}
 .card.Accepted{border-left-color:var(--ok)}.sum{margin:0 0 8px;color:var(--mut);font-style:italic}.fld{display:block;margin:8px 0;font-size:14px;color:var(--mut)}.fld input,.fld textarea{display:block;width:100%;margin-top:3px;color:var(--ink)}
 .jobdesc{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px;margin-top:4px;color:var(--ink);max-height:190px;overflow:auto}
+.button-link{display:inline-block;background:var(--gold);color:#1b1405!important;border:2px solid var(--ink);border-radius:8px;padding:8px 12px;font-weight:700;text-decoration:none}
+.calendar-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.calendar-nav h2{margin:0;text-align:center;flex:1}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-weekday{text-align:center;color:var(--mut);font-size:12px;font-weight:700;padding:4px}.cal-day{min-height:72px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px;overflow:hidden;cursor:pointer}.cal-day:hover,.cal-day.selected{border-color:var(--gold);box-shadow:0 0 0 2px var(--goldbg)}.cal-day.empty-day{background:transparent;border-color:transparent;cursor:default;box-shadow:none}.cal-day.today{border:2px solid var(--gold)}.cal-number{font-weight:800}.cal-dot{display:block;margin-top:5px;padding:2px 4px;border-radius:5px;background:var(--goldbg);color:var(--ink);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.activity-list{display:grid;gap:7px}.activity-item{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border-radius:8px;padding:8px 10px;cursor:pointer}.activity-item:hover{outline:2px solid var(--gold)}.activity-date{min-width:92px;color:var(--mut);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px}.activity-item b{display:block}.modal-backdrop{position:fixed;inset:0;background:rgba(74,23,55,.42);display:grid;place-items:center;padding:18px;z-index:20}.modal-card{width:min(520px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 18px 50px rgba(74,23,55,.25)}
 .chip{display:inline-flex;gap:4px;align-items:center;border:2px solid var(--line);border-radius:20px;padding:2px 10px;margin:3px;font-size:14px}.chip.ok{border-color:var(--ok);color:var(--ok)}.bar{height:14px;background:var(--line);border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
 .mono-ta{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;min-height:280px}.mini{width:70px!important;display:inline-block!important}
 .fc{touch-action:manipulation}.fc:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:12px}.fc .ff,.fc .fb{-webkit-user-select:none;user-select:none}.fc input,.fc textarea{-webkit-user-select:text;user-select:text}.add textarea{flex:1 1 100%;min-width:0;background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -100,9 +102,10 @@ button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
  <button role="tab" data-t="t">Tracker</button>
  <button role="tab" data-t="h">History</button>
  <button role="tab" data-t="p">Projects &amp; experience</button>
- <button role="tab" data-t="s">Resume tweaker</button>
+ <button role="tab" data-t="s">Resume</button>
  <button role="tab" data-t="a">ChatGPT coach</button>
  <button role="tab" data-t="c">Compatibility</button>
+ <button role="tab" data-t="d">Calendar</button>
  <button role="tab" data-t="q">Today’s quest</button>
  <button role="tab" data-t="r">Referral hub</button>
 </div>
@@ -112,7 +115,7 @@ button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
 <script>
 var $=function(s){return document.querySelector(s)};
 var S;try{S=JSON.parse(localStorage.getItem('chipquest'))}catch(e){}
-S=S||{apps:[],xp:0,goal:7,tab:'t'};S.resume=S.resume||'';S.bank=S.bank||[];S.me=S.me||{name:'',contact:'',edu:'',skills:''};S.gen=S.gen||{ne:3,np:3,nb:3};
+S=S||{apps:[],xp:0,goal:7,tab:'t'};S.resume=S.resume||'';S.bank=S.bank||[];S.me=S.me||{name:'',contact:'',edu:'',skills:''};S.gen=S.gen||{ne:3,np:3,nb:3};S.calMonth=S.calMonth||new Date().toISOString().slice(0,7);
 var serverReady=false,serverSaveTimer=0;
 S.apps.forEach(function(a){if(a.stage==='Offer')a.stage='Accepted';if(a.stage==='OA')a.stage='Interview';a.log=a.log||[];a.docs=a.docs||{}});
 function companyName(a){
@@ -131,7 +134,7 @@ fixCompanyNames();
 function save(){try{localStorage.setItem('chipquest',JSON.stringify(S))}catch(e){}
  if(serverReady){clearTimeout(serverSaveTimer);serverSaveTimer=setTimeout(syncServer,350)}}
 async function syncServer(){try{await fetch('/api/state',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({state:S})})}catch(e){}}
-async function loadServer(){try{var r=await fetch('/api/state');if(!r.ok)throw 0;var body=await r.json();serverReady=true;if(body.state){S=body.state;S.apps=S.apps||[];S.resume=S.resume||'';S.bank=S.bank||[];S.me=S.me||{name:'',contact:'',edu:'',skills:''};S.gen=S.gen||{ne:3,np:3,nb:3};S.apps.forEach(function(a){a.log=a.log||[];a.docs=a.docs||{};a.ref=a.ref||[0,0,0]});fixCompanyNames();save();draw()}else syncServer()}catch(e){serverReady=false}}
+async function loadServer(){try{var r=await fetch('/api/state');if(!r.ok)throw 0;var body=await r.json();serverReady=true;if(body.state){S=body.state;S.apps=S.apps||[];S.resume=S.resume||'';S.bank=S.bank||[];S.me=S.me||{name:'',contact:'',edu:'',skills:''};S.gen=S.gen||{ne:3,np:3,nb:3};S.calMonth=S.calMonth||new Date().toISOString().slice(0,7);S.apps.forEach(function(a){a.log=a.log||[];a.docs=a.docs||{};a.ref=a.ref||[0,0,0]});fixCompanyNames();save();draw()}else syncServer()}catch(e){serverReady=false}}
 function today(){return new Date().toLocaleDateString('en-CA')}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 var STAGES=['Saved','Applied','Interview','Accepted','Rejected'];var FL={};
@@ -181,6 +184,23 @@ function setStage(id,st){var a=S.apps.find(function(z){return z.id===id});if(!a)
 var QUESTS=['digital design','RTL design','FPGA','embedded firmware','ASIC verification','hardware engineering','VLSI','computer architecture','embedded systems','SoC design','silicon validation','electrical engineering'];
 function qlink(k,t){var q=encodeURIComponent(k+' intern summer 2027');
  return t==='li'?'https://www.linkedin.com/jobs/search/?keywords='+q+'&f_E=1':'https://www.google.com/search?q='+encodeURIComponent(k+' internship summer 2027 careers apply')}
+function calendarEvents(){var out=[];S.apps.forEach(function(a){var logs=(a.log||[]).filter(function(l){return l.d});if(!logs.length&&a.added)logs=[{s:'Saved',d:a.added}];logs.forEach(function(l){var d=String(l.d||'').slice(0,10);if(/^\d{4}-\d{2}-\d{2}$/.test(d))out.push({id:a.id,date:d,status:l.s||'Activity',company:companyName(a),role:a.role||'Role not added',url:a.url})})});return out.sort(function(a,b){return b.date.localeCompare(a.date)})}
+function applicationPopup(a){var d=a.docs||{},resume=d.resume||'No resume recorded';if(d.resumeFile&&d.resumeFile.key)resume+='<br><a href="'+fileHref(d.resumeFile)+'" target="_blank" rel="noopener">Open uploaded resume PDF</a>';var node=document.createElement('div');node.className='modal-backdrop';node.innerHTML='<div class="modal-card" role="dialog" aria-modal="true"><div class="row"><h2 style="margin:0">'+esc(companyName(a))+'</h2><button class="ghost" data-close-modal aria-label="Close">✕</button></div><p class="sub">'+esc(a.role||'Role not added')+'</p><hr style="border:0;border-top:1px solid var(--line)"><p><b>Application link</b><br><a href="'+esc(a.url||'#')+'" target="_blank" rel="noopener">Open job posting</a></p><p><b>Resume used</b><br>'+esc(d.resume||'No resume recorded')+(d.resumeFile&&d.resumeFile.key?'<br><a href="'+fileHref(d.resumeFile)+'" target="_blank" rel="noopener">Open uploaded resume PDF</a>':'')+'</p></div>';document.body.appendChild(node)}
+function calendarUI(){
+ var bits=(S.calMonth||new Date().toISOString().slice(0,7)).split('-'),y=+bits[0],m=+bits[1]-1,first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),events=calendarEvents(),byDay={},selected=S.calSelected||today();
+ events.forEach(function(e){if(e.date.slice(0,7)==S.calMonth)(byDay[e.date]||(byDay[e.date]=[])).push(e)});
+ var label=new Date(y,m,1).toLocaleDateString(undefined,{month:'long',year:'numeric'}),h='<div class="panel"><div class="calendar-nav"><button class="ghost" data-cal="prev" aria-label="Previous month">←</button><h2>'+label+'</h2><button class="ghost" data-cal="next" aria-label="Next month">→</button></div><div class="calendar-grid">'+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(function(d){return '<div class="calendar-weekday">'+d+'</div>'}).join('');
+ for(var i=0;i<first;i++)h+='<div class="cal-day empty-day"></div>';
+ for(var day=1;day<=days;day++){var key=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0'),list=byDay[key]||[],todayKey=today(),items=list.slice(0,3).map(function(e){return '<span class="cal-dot">'+esc(e.status)+' · '+esc(e.company)+'</span>'}).join('');h+='<div class="cal-day'+(key===todayKey?' today':'')+(key===selected?' selected':'')+'" data-cal-date="'+key+'"><span class="cal-number">'+day+'</span>'+items+(list.length>3?'<span class="cal-dot">+'+(list.length-3)+' more</span>':'')+'</div>'}
+ var selectedEvents=events.filter(function(e){return e.date===selected}),selectedLabel=new Date(selected+'T12:00:00').toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+ h+='</div></div><div class="panel"><h2>'+selectedLabel+'</h2>';
+ if(!selectedEvents.length)h+='<div class="empty">No applications or activity on this date.</div>';
+ else h+='<div class="activity-list">'+selectedEvents.map(function(e){return '<div class="activity-item" data-open-app="'+e.id+'"><div class="activity-date">'+e.date+'</div><div><b>'+esc(e.company)+'</b><span class="sub">'+esc(e.role)+' · '+esc(e.status)+'</span></div></div>'}).join('')+'</div>';
+ h+='</div><div class="panel"><h2>All application activity</h2>';
+ if(!events.length)h+='<div class="empty">No dated activity yet. Add a job or update its status to build your calendar.</div>';
+ else h+='<div class="activity-list">'+events.map(function(e){return '<div class="activity-item" data-open-app="'+e.id+'"><div class="activity-date">'+e.date+'</div><div><b>'+esc(e.company)+'</b><span class="sub">'+esc(e.role)+' · '+esc(e.status)+'</span></div></div>'}).join('')+'</div>';
+ return h+'</div>';
+}
 function view(){var v=$('#view'),h='';
  document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.t===S.tab)});
  if(S.tab==='t'){
@@ -191,6 +211,7 @@ function view(){var v=$('#view'),h='';
  }else if(S.tab==='p'){h=bank();
  }else if(S.tab==='a'){h=askUI();
  }else if(S.tab==='c'){h=compatibilityUI();
+ }else if(S.tab==='d'){h=calendarUI();
  }else if(S.tab==='s'){h=tool();
  }else if(S.tab==='q'){
   var d=Math.floor(Date.now()/864e5),pick=[0,1,2].map(function(i){return QUESTS[(d+i*4)%QUESTS.length]});
@@ -233,11 +254,11 @@ function hist(){var c={};STAGES.forEach(function(s){c[s]=0});S.apps.forEach(func
 var JD='',RES_OUT='',LAST=0,STOP={};
 'the and for with you your our are will have has from that this their they who all can able such including must more other into over about work working team teams role roles position years year experience skills ability strong good new use using used plus preferred required requirements responsibilities qualifications looking join make well also within across both what when where which while least NOT must'.split(' ').forEach(function(w){STOP[w.toLowerCase()]=1});
 var TERMS=['verilog','systemverilog','vhdl','fpga','rtl','uvm','vivado','quartus','python','c++','embedded','firmware','rtos','arm','uart','spi','i2c','linux','git','synthesis','timing','asic','cadence','synopsys','matlab','tcl','perl','bash','pcb','oscilloscope','verification','testbench','simulation','modelsim','questa','axi','pcie','ddr','soc','stm32','risc-v','assembly','debug','validation','low power','dft','cmos','spice','altium','kicad','labview','ethernet','amba'];
-function has(t,k){return new RegExp('(^|[^a-z0-9+#])'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\const page = __PAGE__;')+'($|[^a-z0-9+#])').test(t)}
-function tool(){return '<div class="panel"><h2>Resume tweaker</h2><p class="sub">Paste your resume (LaTeX from Overleaf or plain text) and the job post. You will see which keywords you are missing, then you fix it in Overleaf.</p>'+
+function has(t,k){return new RegExp('(^|[^a-z0-9+#])'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'($|[^a-z0-9+#])').test(t)}
+function tool(){return '<div class="panel"><h2>Resume</h2><p class="sub">Paste your resume and the job posting. Side Quest will optimize ATS alignment, prioritize the most relevant projects, and keep every claim grounded in your actual experience.</p>'+
  '<label class="fld">Your resume (paste your Overleaf LaTeX. Its header, preamble and education get reused)<textarea class="tpl" data-rs="1" placeholder="In Overleaf: click the editor, Ctrl+A, Ctrl+C, then paste here">'+esc(S.resume)+'</textarea></label>'+
  '<label class="fld">Job description<textarea class="tpl" id="jd" placeholder="Paste the full job posting">'+esc(JD)+'</textarea></label>'+
- '<p>Max experiences <input class="mini" type="number" min="1" max="6" data-g="ne" value="'+S.gen.ne+'"> projects <input class="mini" type="number" min="1" max="8" data-g="np" value="'+S.gen.np+'"> bullets each <input class="mini" type="number" min="1" max="6" data-g="nb" value="'+S.gen.nb+'"></p><p><button id="gn">Generate tailored resume</button> <button class="ghost" id="an">Check my match</button></p><div id="gen">'+GEN_OUT+'</div><div class="panel"><h2>ChatGPT resume editor</h2><p class="sub">Describe the changes you want. Side Quest will build a grounded prompt using your current resume, job description, and project bank.</p><textarea class="tpl" id="fbt" style="min-height:70px" aria-label="Your feedback"></textarea><p><button id="fbgo">Prepare ChatGPT prompt</button> <button class="ghost" id="fbundo">Undo last change</button> <span id="fbm" class="sub"></span></p></div><div id="out">'+RES_OUT+'</div></div>'+ 
+ '<p>Max experiences <input class="mini" type="number" min="1" max="6" data-g="ne" value="'+S.gen.ne+'"> projects <input class="mini" type="number" min="1" max="8" data-g="np" value="'+S.gen.np+'"> bullets each <input class="mini" type="number" min="1" max="6" data-g="nb" value="'+S.gen.nb+'"></p><p><button id="gn">Generate tailored resume</button> <button class="ghost" id="an">Check my match</button></p><div id="gen">'+GEN_OUT+'</div><div class="panel"><h2>Resume editor</h2><p class="sub">Describe the change you want. Side Quest will regenerate the ATS-aligned resume using your current resume, job description, and project bank.</p><textarea class="tpl" id="fbt" style="min-height:70px" aria-label="Your feedback"></textarea><p><button id="fbgo">Change</button> <button class="ghost" id="fbundo">Undo last change</button> <span id="fbm" class="sub"></span></p></div><div id="out">'+RES_OUT+'</div></div>'+ 
  '<div class="note">Only add keywords for things you have really done. Recruiters and interviewers will ask about them. This page can’t connect to Overleaf, so copy and paste both ways.</div>'}
 function analyze(){var res=S.resume,jl=JD.toLowerCase(),rl=res.toLowerCase().replace(/\\[a-z]+\*?(\[[^\]]*\])?/g,' ').replace(/[{}]/g,' ');
  if(!res.trim()||!JD.trim()){$('#out').innerHTML='<p class="note">Paste both your resume and the job description first.</p>';return}
@@ -257,7 +278,7 @@ function analyze(){var res=S.resume,jl=JD.toLowerCase(),rl=res.toLowerCase().rep
  '<p class="note" id="skl">Tick the ones you really have and I will build a Skills line.</p><h2 style="margin-top:14px">ATS check</h2><ul>'+ch.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'+
  (opts?'<p><select id="jobsel">'+opts+'</select> <button id="mark">Note this tweak on a job</button></p>':'');
  $('#out').innerHTML=RES_OUT}
-var GEN_OUT='';
+var GEN_OUT='',RESUME_FEEDBACK='';
 $('#view').addEventListener('click',function(e){if(e.target.id!=='impb')return;var r=$('#imp').value.trim().replace(/^```(json)?|```$/g,'').trim();
  try{var arr=JSON.parse(r);if(!Array.isArray(arr))throw 0;var n=0;arr.forEach(function(x,i){if(!x||!x.title)return;S.bank.push({id:Date.now()+i,type:x.type==='Experience'?'Experience':'Project',title:String(x.title),org:String(x.org||''),dates:String(x.dates||''),tags:Array.isArray(x.tags)?x.tags.join(', '):String(x.tags||''),bullets:Array.isArray(x.bullets)?x.bullets.join('\n'):String(x.bullets||'')});n++});save();view();$('#impm').textContent='Added '+n+' items.'}
  catch(er){$('#impm').textContent='That did not look like the import block. Paste the JSON import block here.'}});
@@ -312,10 +333,13 @@ function genT(K,res,g,o){
  var tP=nm(/project/i)||'TECHNICAL PROJECTS',tE=nm(/experience/i)||'EXPERIENCE',sk=ms.filter(function(s){return /skill/i.test(s.n)})[0],skb='';
  if(sk)skb=sk.b.replace(/(\\textbf\{[^}]*:\}\s*)([^\n]*)/g,function(a,l,it){var arr=it.split(',').map(function(s,i){return {s:s.trim(),i:i,h:hits(s,K)}}).filter(function(z){return z.s});arr.sort(function(p,q){return q.h-p.h||p.i-q.i});return l+arr.map(function(z){return z.s}).join(', ')});
  else if(S.me.skills.trim())skb='    \\section{TECHNICAL SKILLS}\n\n    \\begin{onecolentry}\n        '+S.me.skills.split(',').map(function(s){return tex(s.trim())}).filter(Boolean).join(', ')+'\n    \\end{onecolentry}\n';
+ var profile=(res+' '+S.me.skills+' '+S.bank.map(function(b){return b.title+' '+b.tags+' '+b.bullets}).join(' ')).toLowerCase(),supported=K.filter(function(k){return has(profile,k)}),existing=(skb||'').toLowerCase();
+ supported=supported.filter(function(k){return existing.indexOf(k.toLowerCase())<0});
+ if(supported.length)skb+=((skb?'\n':'')+'    \\textbf{ATS-aligned keywords:} '+supported.map(tex).join(', ')+'\n');
  var ex=pickB('Experience',g.ne,K),pr=pickB('Project',g.np,K);
  var out=hd+keep+(pr.length?'    \\section{'+tP+'}\n\n'+pr.map(function(p){var t=p.b.tags.split(',').map(function(s,i){return {s:s.trim(),h:hits(s,K),i:i}}).filter(function(z){return z.s}).sort(function(a,c){return c.h-a.h||a.i-c.i}).slice(0,4).map(function(z){return z.s}).join(', ');return entT(p.b,t,K,g.nb)}).join(''):'')+(ex.length?'    \\section{'+tE+'}\n\n'+ex.map(function(p){return entT(p.b,p.b.dates,K,g.nb)}).join(''):'')+(skb?skb.replace(/\s*$/,'\n\n'):'')+'\\end{document}\n';
  var cov=K.length?Math.round(hits(out,K)/K.length*100):0,dd=dep(out);
- GEN_OUT=(dd?'<p class="note">Warning: the curly braces do not match ('+(dd>0?dd+' extra {':(-dd)+' extra }')+').</p>':'')+'<h2>Generated resume (LaTeX)</h2><p class="sub">Covers '+cov+'% of the job keywords. Picked: '+pr.concat(ex).map(function(x){return esc(x.b.title)+' ('+x.s+' hits)'}).join(', ')+'. Your header, Summary and Education are kept as they are, and the best-matching skills are moved first.</p><textarea class="tpl mono-ta" id="gtex" readonly aria-label="Generated LaTeX">'+esc(out)+'</textarea><p><button id="cpg">Copy LaTeX</button></p><p class="note">In Overleaf: open intuitive.tex, select all, paste, then Recompile. If it runs past one page, lower the number boxes above and generate again.</p>';
+ GEN_OUT=(dd?'<p class="note">Warning: the curly braces do not match ('+(dd>0?dd+' extra {':(-dd)+' extra }')+').</p>':'')+'<h2>Generated resume (LaTeX)</h2><p class="sub">Covers '+cov+'% of the job keywords. Picked: '+pr.concat(ex).map(function(x){return esc(x.b.title)+' ('+x.s+' hits)'}).join(', ')+'. Your header, Summary and Education are kept as they are, and the best-matching skills are moved first.</p><textarea class="tpl mono-ta" id="gtex" readonly aria-label="Generated LaTeX">'+esc(out)+'</textarea><p><button id="cpg">Copy LaTeX</button> <a id="dltex" class="button-link" href="#" download="side-quest-tailored-resume.tex">Download tailored resume code</a></p><p class="note">The generated resume uses ATS-compatible plain text, standard headings, and the most relevant projects. Only include keywords you can honestly support. In Overleaf, open your .tex file, select all, paste, then recompile.</p>';
  o.innerHTML=GEN_OUT}
 var UNDO=[];
 function openChatGPTPrompt(prompt,statusEl){
@@ -323,15 +347,12 @@ function openChatGPTPrompt(prompt,statusEl){
  var w=window.open('https://chatgpt.com/','_blank','noopener');
  if(statusEl)statusEl.textContent=w?'Prompt copied. ChatGPT opened in a new tab. Paste it there.':'Prompt copied. Open ChatGPT and paste it there.';
 }
-$('#view').addEventListener('click',async function(e){var t=e.target,m=$('#fbm'),ta=$('#gtex');
+$('#view').addEventListener('click',function(e){var t=e.target,m=$('#fbm'),ta=$('#gtex');
+ if(t.id==='dltex'){var code=ta&&ta.value;if(code){t.href='data:text/plain;charset=utf-8,'+encodeURIComponent(code)}return}
  if(t.id==='fbundo'){if(ta&&UNDO.length){var u=UNDO.pop();ta.value=u;ta.textContent=u;GEN_OUT=$('#gen').innerHTML;m.textContent='Undone.'}else if(m)m.textContent='Nothing to undo.';return}
  if(t.id!=='fbgo')return;var fb=$('#fbt').value.trim();
  if(!ta){m.textContent='Generate a resume first.';return}if(!fb){m.textContent='Type what you want changed.';return}
- t.disabled=true;m.textContent='Preparing ChatGPT prompt...';
- var bank=S.bank.map(function(b){return {type:b.type,title:b.title,org:b.org,dates:b.dates,tags:b.tags,bullets:b.bullets}});
- var prompt='You edit a LaTeX resume for a student. Apply the FEEDBACK to the CURRENT LATEX.\nRules:\n- Keep the same template commands and the same preamble and header. Change only what the feedback needs.\n- Use only facts, skills, numbers and bullets from the BANK or the current resume. Never invent anything. If the feedback asks for something that is not in the BANK, leave it out and say so in NOTES.\n- Follow both what the user wants and what the user does not want, exactly.\n- Reply with one line starting NOTES: (one or two simple sentences about what you changed or could not change), then the full updated LaTeX between a line <<<LATEX and a line LATEX>>>. Nothing else.\n\nFEEDBACK:\n'+fb+'\n\nJOB DESCRIPTION:\n'+JD+'\n\nBANK:\n'+JSON.stringify(bank)+'\n\nCURRENT LATEX:\n'+ta.value;
- openChatGPTPrompt(prompt,m);
- t.disabled=false});
+ t.disabled=true;m.textContent='Changing resume...';UNDO.push(ta.value);RESUME_FEEDBACK=fb;generate();m.textContent='Resume changed using your feedback. Download the updated tailored code below.';t.disabled=false});
 var CHAT=[],ASKJOB='';
 function chatHtml(){return CHAT.map(function(c,i){return '<div class="panel"><b>'+esc(c.q)+'</b><p style="white-space:pre-wrap">'+esc(c.a)+'</p><button class="ghost" data-acp="'+i+'">Copy answer</button></div>'}).join('')}
 function askUI(){var opts='<option value="">No specific job</option>'+S.apps.map(function(a){return '<option value="'+a.id+'"'+(String(a.id)===ASKJOB?' selected':'')+'>'+esc(a.company+(a.role?' \u00b7 '+a.role:''))+'</option>'}).join('');
@@ -355,7 +376,7 @@ $('#view').addEventListener('click',function(e){var t=e.target;
 function dep(s){s=s.replace(/\\[{}]/g,'');return (s.match(/\{/g)||[]).length-(s.match(/\}/g)||[]).length}
 function generate(){var o=$('#gen');if(!JD.trim()){o.innerHTML='<p class="note">Paste the job description first.</p>';return}
  if(!S.bank.length){o.innerHTML='<p class="note">Add your projects and experience in the Projects &amp; experience tab first.</p>';return}
- var K=kws(JD.toLowerCase()),m=S.me,g=S.gen,res=S.resume,hd='',edu=null;if(/\\begin\{twocolentry\}/.test(res))return genT(K,res,g,o);
+ var K=kws((JD+' '+RESUME_FEEDBACK).toLowerCase()),m=S.me,g=S.gen,res=S.resume,hd='',edu=null;if(/\\begin\{twocolentry\}/.test(res))return genT(K,res,g,o);
  if(/\\begin\{document\}/.test(res)){var i=res.search(/\\section/);hd=i>0?res.slice(0,i):res.slice(0,res.indexOf('\\begin{document}')+16)+'\n';var em=res.match(/\\section\*?\{Education\}[\s\S]*?(?=\\section|\\end\{document\})/);edu=em?em[0]:null}
  else hd='\\documentclass[10pt]{article}\n\\usepackage[margin=0.6in]{geometry}\n\\usepackage[hidelinks]{hyperref}\n\\usepackage{titlesec}\n\\titleformat{\\section}{\\large\\bfseries}{}{0em}{}[\\titlerule]\n\\titlespacing*{\\section}{0pt}{8pt}{4pt}\n\\pagestyle{empty}\\setlength{\\parindent}{0pt}\n\\begin{document}\n\\begin{center}{\\Huge\\bfseries '+tex(m.name||'Your Name')+'}\\par '+tex(m.contact)+'\\end{center}\n';
  hd=hd.replace(/\{\s*$/,'');if(edu){edu=edu.replace(/\s*\{\s*$/,'\n');while(dep(edu)<0&&/\}\s*$/.test(edu))edu=edu.replace(/\}(\s*)$/,'$1')}
@@ -364,11 +385,11 @@ function generate(){var o=$('#gen');if(!JD.trim()){o.innerHTML='<p class="note">
  function block(x){var b=x.b,bl=b.bullets.split('\n').map(function(s){return s.trim().replace(/^[-*\u2022]\s*/,'')}).filter(Boolean).map(function(s){return {s:s,k:hits(s,K)}}).sort(function(a,c){return c.k-a.k}).slice(0,g.nb);
   return '\\noindent\\textbf{'+tex(b.title)+'}'+(b.org?' | \\textit{'+tex(b.org)+'}':'')+' \\hfill '+tex(b.dates)+'\n\\begin{itemize}\\setlength\\itemsep{0pt}\\setlength\\topsep{2pt}\n'+bl.map(function(y){return '\\item '+tex(y.s)}).join('\n')+'\n\\end{itemize}\n'}
  var ex=pick('Experience',g.ne),pr=pick('Project',g.np);
- var sk=m.skills.split(',').map(function(s){return s.trim()}).filter(Boolean).sort(function(a,b){return hits(b,K)-hits(a,K)});
+ var profile=(res+' '+m.skills+' '+S.bank.map(function(b){return b.title+' '+b.tags+' '+b.bullets}).join(' ')).toLowerCase(),sk=m.skills.split(',').map(function(s){return s.trim()}).filter(Boolean);K.filter(function(k){return has(profile,k)&&!sk.some(function(s){return has(s.toLowerCase(),k)})}).forEach(function(k){sk.push(k)});sk.sort(function(a,b){return hits(b,K)-hits(a,K)});
  var out=hd+edu+(ex.length?'\\section{Experience}\n'+ex.map(block).join(''):'')+(pr.length?'\\section{Projects}\n'+pr.map(block).join(''):'')+(sk.length?'\\section{Skills}\n\\noindent '+sk.map(tex).join(', ')+'\\par\n':'')+'\\end{document}\n';
  var cov=K.length?Math.round(hits(out,K)/K.length*100):0;var dd=dep(out);
- GEN_OUT=(dd?'<p class="note">Warning: the curly braces do not match ('+(dd>0?dd+' extra {':(-dd)+' extra }')+'). Look at the lines just above each \\section in the LaTeX, or use the ChatGPT coach for help.</p>':'')+'<h2>Generated resume (LaTeX)</h2><p class="sub">Covers '+cov+'% of the job keywords. Picked: '+ex.concat(pr).map(function(x){return esc(x.b.title)+' ('+x.s+' hits)'}).join(', ')+'</p>'+ 
- '<textarea class="tpl mono-ta" id="gtex" readonly aria-label="Generated LaTeX">'+esc(out)+'</textarea><p><button id="cpg">Copy LaTeX</button></p><p class="note">In Overleaf: open main.tex, select all, paste, then Recompile. Check that it fits on one page, and cut bullets with the number boxes above if not.</p>';
+ GEN_OUT=(dd?'<p class="note">Warning: the curly braces do not match ('+(dd>0?dd+' extra {':(-dd)+' extra }')+'). Look at the lines just above each \\section in the LaTeX, or use the ChatGPT coach for help.</p>':'')+'<h2>Generated resume (LaTeX)</h2><p class="sub">ATS keyword coverage: '+cov+'%. Relevant projects and experience selected: '+ex.concat(pr).map(function(x){return esc(x.b.title)+' ('+x.s+' matches)'}).join(', ')+'</p>'+ 
+ '<textarea class="tpl mono-ta" id="gtex" readonly aria-label="Generated LaTeX">'+esc(out)+'</textarea><p><button id="cpg">Copy LaTeX</button> <a id="dltex" class="button-link" href="#" download="side-quest-tailored-resume.tex">Download tailored resume code</a></p><p class="note">ATS-safe structure: standard headings, plain text, no tables or graphics. Only supported keywords are included.</p>';
  o.innerHTML=GEN_OUT}
 function summarize(jd){jd=(jd||'').trim();if(!jd)return '';var K=kws(jd.toLowerCase()),ss=jd.replace(/\s+/g,' ').split(/[.!?] /).filter(function(s){return s.length>40&&s.length<300});
  var b=ss.sort(function(x,y){return hits(y,K)-hits(x,K)})[0]||jd.replace(/\s+/g,' ').slice(0,140);if(b.length>150)b=b.slice(0,147).replace(/\s+\S*$/,'')+'...';
@@ -391,6 +412,13 @@ function draw(){head();view()}
 $('#view').addEventListener('dblclick',function(e){if(e.target.closest('input,textarea,button,select,a,label'))return;flipEl(e.target)});
 var lastTap=0;$('#view').addEventListener('touchend',function(e){if(e.target.closest('input,textarea,button,select,a,label'))return;var now=Date.now();if(now-lastTap<380){flipEl(e.target);e.preventDefault()}lastTap=now});
 $('#view').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.classList.contains('fc'))flipEl(e.target)});
+$('#view').addEventListener('click',function(e){var t=e.target,dateCell=t.closest('[data-cal-date]'),appRow=t.closest('[data-open-app]');
+ if(dateCell){S.calSelected=dateCell.dataset.calDate;save();view();return}
+ if(t.dataset.cal){var p=(S.calMonth||new Date().toISOString().slice(0,7)).split('-'),d=new Date(+p[0],+p[1]-1+(t.dataset.cal==='next'?1:-1),1);S.calMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');S.calSelected=S.calMonth+'-01';save();view();return}
+ if(appRow){var a=S.apps.find(function(z){return String(z.id)===String(appRow.dataset.openApp)});if(a)applicationPopup(a);return}
+});
+document.addEventListener('click',function(e){if(e.target.dataset.closeModal||e.target.classList.contains('modal-backdrop')){var m=e.target.closest('.modal-backdrop');if(m)m.remove()}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var m=document.querySelector('.modal-backdrop');if(m)m.remove()}});
 $('#view').addEventListener('click',function(e){var t=e.target;if(t.dataset.sum){var a=S.apps.find(function(z){return z.id==t.dataset.sum});if(a&&a.docs.jd&&a.docs.jd.trim()){a.sum=summarize(a.docs.jd);save();view()}else t.textContent='Paste the job description first'}});
 $('#view').addEventListener('click',function(e){var t=e.target;
  if(t.id==='addbk'){var ti=$('#bti').value.trim();if(!ti)return;S.bank.push({id:Date.now(),type:$('#bt').value,title:ti,org:$('#bto').value.trim(),dates:$('#btd').value.trim(),tags:$('#btg').value.trim(),bullets:$('#btb').value});save();view()}
